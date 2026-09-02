@@ -1,0 +1,42 @@
+name: Release
+
+# Only a tag publishes. A branch push cannot reach npm, so nobody releases by accident.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  id-token: write # provenance: links the tarball to the commit that produced it
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # registry-url is what writes the .npmrc that picks up NODE_AUTH_TOKEN. Without it the token
+      # is silently ignored and the publish fails with ENEEDAUTH.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - run: npm ci
+
+      - run: npm run type-check
+
+      - run: npm test
+
+      - run: npm run build
+
+      - name: Publish @mb-digital/geo
+        run: npm publish --workspace @mb-digital/geo --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish @mb-digital/geo-data
+        run: npm publish --workspace @mb-digital/geo-data --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

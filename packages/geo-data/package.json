@@ -1,0 +1,22 @@
+{
+  "name": "@mb-digital/geo-data",
+  "version": "0.0.0",
+  "description": "Versioned country, region and city shards. Derived from the dr5hn countries-states-cities database, ODbL-1.0.",
+  "license": "ODbL-1.0",
+  "homepage": "https://github.com/Revenue-Rush/mbdigital-geo#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Revenue-Rush/mbdigital-geo.git",
+    "directory": "packages/geo-data"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "sideEffects": false,
+  "files": ["v1"],
+  "exports": {
+    "./v1/*": "./v1/*",
+    "./package.json": "./package.json"
+  }
+}

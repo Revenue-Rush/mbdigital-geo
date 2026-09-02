@@ -1,0 +1,21 @@
+{
+  "name": "mbdigital-geo",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "workspaces": [
+    "packages/*",
+    "tools/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace @mb-digital/geo",
+    "test": "npm run test --workspace @mb-digital/geo",
+    "type-check": "tsc --noEmit -p packages/geo/tsconfig.json",
+    "generate": "npm run start --workspace @mb-digital/geo-generator"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.3"
+  }
+}
