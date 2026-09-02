@@ -14,7 +14,9 @@
     "provenance": true
   },
   "sideEffects": false,
-  "files": ["v1"],
+  "files": [
+    "v1/**/*.json"
+  ],
   "exports": {
     "./v1/*": "./v1/*",
     "./package.json": "./package.json"
