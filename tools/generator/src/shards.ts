@@ -1,4 +1,5 @@
 import { SCHEMA_VERSION } from './config.js';
+import { isAdministeredByParent, removalFor } from './territories.js';
 import type { SourceCountry } from './source.js';
 
 export type ShardKind = 'countries' | 'regions' | 'cities';
@@ -12,6 +13,7 @@ export interface Shard {
 export interface ShardSet {
     shards: Shard[];
     countries: [string, string, boolean][];
+    removedSubdivisions: string[];
     countryCount: number;
     regionCount: number;
     cityCount: number;
@@ -35,6 +37,7 @@ export function buildShards(countries: SourceCountry[]): ShardSet {
     const countryRows: [string, string, boolean][] = [];
 
     let regionCount = 0;
+    const removedSubdivisions: string[] = [];
     let cityCount = 0;
     let droppedDuplicateCities = 0;
 
@@ -49,6 +52,13 @@ export function buildShards(countries: SourceCountry[]): ShardSet {
         const regionRows: [string, string, boolean][] = [];
 
         for (const region of orderedRegions) {
+            if (!isAdministeredByParent(country.code, region.code)) {
+                removedSubdivisions.push(
+                    `${country.code}/${region.code} ${region.name} — ${removalFor(country.code, region.code)?.reason ?? ''}`,
+                );
+                continue;
+            }
+
             const uniqueCities = new Set(region.cities);
             droppedDuplicateCities += region.cities.length - uniqueCities.size;
 
@@ -93,6 +103,7 @@ export function buildShards(countries: SourceCountry[]): ShardSet {
     return {
         shards,
         countries: countryRows,
+        removedSubdivisions,
         countryCount: countryRows.length,
         regionCount,
         cityCount,

@@ -1,4 +1,5 @@
 import { writeBundledCountries } from './bundled.js';
+import { INVARIANTS, checkInvariants } from './invariants.js';
 import { MAX_CITY_SHARD_BROTLI_BYTES } from './config.js';
 import { emitShards, pruneStaleShards, snapshotBrotliSizes } from './emit.js';
 import { GeneratorError, describe } from './errors.js';
@@ -19,9 +20,28 @@ async function main(): Promise<number> {
     const bundledBytes = await writeBundledCountries(shardSet);
 
     printReport({ shardSet, emitted, previousBrotliSizes, pruned, elapsedMs: Date.now() - startedAt });
-    process.stdout.write(`
-bundled country table for the client: ${formatBytes(bundledBytes)}
-`);
+    process.stdout.write(`\nbundled country table for the client: ${formatBytes(bundledBytes)}\n`);
+
+    if (shardSet.removedSubdivisions.length > 0) {
+        process.stdout.write('\nsubdivisions removed (not administered by the listed parent)\n');
+        for (const line of shardSet.removedSubdivisions) {
+            process.stdout.write(`  ${line}\n`);
+        }
+    }
+
+    const violations = checkInvariants(shardSet);
+
+    if (violations.length > 0) {
+        process.stderr.write(`\nerror: ${violations.length} territorial invariant(s) failed:\n`);
+        for (const line of violations) {
+            process.stderr.write(`  ${line}\n`);
+        }
+        process.stderr.write('upstream data changed under us; fix territories.ts, do not relax the check\n');
+
+        return 1;
+    }
+
+    process.stdout.write(`\nterritorial invariants: ${INVARIANTS.length} checked, all hold\n`);
 
     const oversized = emitted
         .filter((shard) => shard.kind === 'cities' && shard.brotliBytes > MAX_CITY_SHARD_BROTLI_BYTES)
