@@ -1,3 +1,4 @@
+import { writeBundledCountries } from './bundled.js';
 import { MAX_CITY_SHARD_BROTLI_BYTES } from './config.js';
 import { emitShards, pruneStaleShards, snapshotBrotliSizes } from './emit.js';
 import { GeneratorError, describe } from './errors.js';
@@ -15,8 +16,12 @@ async function main(): Promise<number> {
     const previousBrotliSizes = await snapshotBrotliSizes();
     const emitted = await emitShards(shardSet.shards);
     const pruned = await pruneStaleShards(emitted);
+    const bundledBytes = await writeBundledCountries(shardSet);
 
     printReport({ shardSet, emitted, previousBrotliSizes, pruned, elapsedMs: Date.now() - startedAt });
+    process.stdout.write(`
+bundled country table for the client: ${formatBytes(bundledBytes)}
+`);
 
     const oversized = emitted
         .filter((shard) => shard.kind === 'cities' && shard.brotliBytes > MAX_CITY_SHARD_BROTLI_BYTES)

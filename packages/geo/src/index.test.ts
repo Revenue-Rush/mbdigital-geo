@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { afterEach, describe, it } from 'node:test'
 
 import { configure, getCities, getCountries, getRegions, resetCache } from './index.ts'
-import { countryFlagEmoji } from './countries.ts'
+import { countries, countryFlagEmoji, countryName } from './countries.ts'
 
 const shards: Record<string, unknown> = {
   'countries.json': {
@@ -78,5 +78,27 @@ describe('geo client', () => {
   it('derives a flag from the country code by arithmetic, not a lookup table', () => {
     assert.equal(countryFlagEmoji('UA'), '🇺🇦')
     assert.equal(countryFlagEmoji('us'), '🇺🇸')
+  })
+})
+
+describe('bundled country index', () => {
+  it('answers synchronously, with no network at all', () => {
+    const before = requests.length
+    const list = countries()
+
+    assert.equal(requests.length, before)
+    assert.equal(list.length, 250)
+  })
+
+  it('is sorted by name so a select needs no client-side sort', () => {
+    const names = countries().map(c => c.name)
+
+    assert.deepEqual(names, [...names].sort((a, b) => new Intl.Collator('en').compare(a, b)))
+  })
+
+  it('resolves a name from a code, case-insensitively', () => {
+    assert.equal(countryName('US'), 'United States')
+    assert.equal(countryName('ua'), 'Ukraine')
+    assert.equal(countryName('ZZ'), undefined)
   })
 })

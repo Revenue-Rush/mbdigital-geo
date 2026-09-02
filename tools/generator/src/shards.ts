@@ -11,6 +11,7 @@ export interface Shard {
 
 export interface ShardSet {
     shards: Shard[];
+    countries: [string, string, boolean][];
     countryCount: number;
     regionCount: number;
     cityCount: number;
@@ -91,6 +92,7 @@ export function buildShards(countries: SourceCountry[]): ShardSet {
 
     return {
         shards,
+        countries: countryRows,
         countryCount: countryRows.length,
         regionCount,
         cityCount,
