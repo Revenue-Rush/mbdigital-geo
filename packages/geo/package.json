@@ -1,6 +1,6 @@
 {
   "name": "@mb-digital/geo",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Country, state and city lookups for the browser, without shipping the world in your bundle.",
   "type": "module",
   "license": "MIT",
@@ -12,16 +12,23 @@
     "url": "git+https://github.com/Revenue-Rush/mbdigital-geo.git",
     "directory": "packages/geo"
   },
-  "keywords": ["country", "state", "region", "city", "iso-3166"],
+  "keywords": [
+    "country",
+    "state",
+    "region",
+    "city",
+    "iso-3166"
+  ],
   "engines": {
     "node": ">=20"
   },
   "publishConfig": {
-    "access": "public",
-    "provenance": true
+    "access": "public"
   },
   "sideEffects": false,
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
