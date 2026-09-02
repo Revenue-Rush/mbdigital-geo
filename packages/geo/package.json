@@ -1,6 +1,6 @@
 {
   "name": "@mb-digital/geo",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Country, state and city lookups for the browser, without shipping the world in your bundle.",
   "type": "module",
   "license": "MIT",
