@@ -5,3 +5,9 @@ dist/
 .env
 .env.*
 !.env.example
+
+# Pre-compressed twins are derived from the .json shards and are only needed when uploading to
+# S3, where CloudFront cannot compress at brotli q11 on the fly. The shards themselves are
+# committed, so a release does not depend on a 46 MB download from a third party succeeding.
+packages/geo-data/v1/**/*.br
+packages/geo-data/v1/**/*.gz

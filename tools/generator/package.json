@@ -1,0 +1,19 @@
+{
+    "name": "@mb-digital/geo-generator",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "description": "Builds the sharded @mb-digital/geo-data payloads from the dr5hn countries-states-cities dataset.",
+    "engines": {
+        "node": ">=22"
+    },
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "start": "tsx src/index.ts"
+    },
+    "devDependencies": {
+        "@types/node": "^22.15.3",
+        "tsx": "^4.19.3",
+        "typescript": "~5.9.3"
+    }
+}
