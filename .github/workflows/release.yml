@@ -28,7 +28,10 @@ jobs:
           cache: npm
           registry-url: https://registry.npmjs.org
 
-      - run: npm install -g npm@latest
+      # Pinned, not @latest. npm 12 requires Node ^22.22.2 and the runner's Node 22 is not
+      # guaranteed to be that patch, so @latest can fail the release with EBADENGINE on a day
+      # nobody changed anything. 11.19.1 carries OIDC publishing and runs on any Node >= 22.9.
+      - run: npm install -g npm@11.19.1
 
       - name: Confirm the toolchain can do trusted publishing
         run: |
