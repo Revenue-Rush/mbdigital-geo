@@ -48,8 +48,12 @@ jobs:
 
       # Provenance is implied by trusted publishing, but stating it keeps the intent visible and the
       # command honest if this ever runs somewhere without OIDC.
+      #
+      # The two packages version independently: a client-only change leaves geo-data untouched, and
+      # npm rejects republishing a version that already exists. Skipping a version already on the
+      # registry keeps that ordinary case green, so a red run still means something actually broke.
       - name: Publish @mb-digital/geo
-        run: npm publish --workspace @mb-digital/geo --provenance --access public
+        run: ./.github/publish-workspace.sh @mb-digital/geo
 
       - name: Publish @mb-digital/geo-data
-        run: npm publish --workspace @mb-digital/geo-data --provenance --access public
+        run: ./.github/publish-workspace.sh @mb-digital/geo-data
