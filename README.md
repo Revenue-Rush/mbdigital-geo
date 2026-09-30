@@ -71,8 +71,11 @@ CloudFront cannot compress at brotli quality 11 on the fly.
 
 ## Releasing
 
-A tag is the only thing that publishes. `npm version`, push the tag, and the release workflow runs
-tests, builds, and publishes both packages with provenance.
+A tag on `main` is the only thing that publishes. Branch, `npm version <patch|minor|major>
+--no-git-tag-version --workspace <package>`, open a pull request to `main`, merge it, then tag the
+merge commit: `git fetch origin && git tag v<X.Y.Z> origin/main && git push origin v<X.Y.Z>`. The
+release workflow refuses to publish a tag that is not on `main`, then runs tests, builds, and
+publishes both packages with provenance.
 
 CI runs `npm pack --dry-run` on every pull request and prints the tarball contents. Read it. That is
 where secrets and stray source files leak, and a publish cannot be undone after 72 hours.
